@@ -18,7 +18,12 @@
   background-color: whitesmoke;
 }
 
-.toYellow {
+.Card:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.Yellow {
   display: flex;
   width: 21%;
   height: 30%;
@@ -27,8 +32,12 @@
   background-color: yellow;
 }
 
+.Yellow:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
 
-.toGreen {
+.Green {
   display: flex;
   width: 21%;
   height: 30%;
@@ -37,7 +46,7 @@
   background-color: green;
 }
 
-.Card:hover {
+.Green:hover {
   opacity: 0.8;
   cursor: pointer;
 }
@@ -49,11 +58,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-.toYellow:hover {
-  opacity: 0.8;
-  cursor: pointer;
 }
 
 img {

@@ -1,22 +1,20 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
-import { findAllByAltText } from '@testing-library/react';
 
-const Cardi = ({setActives, actives, selected, setSelected, custom}) => {
+const NUM_PROPERTIES = 4; 
+
+const SetCard = ({selected, setSelected, custom}) => {
   
   function handleClick(e) {
-  
-    if (e.target.className.includes("Card") && actives < 3) {
-      e.target.className = "toYellow noSelect"
-      setActives(actives + 1)
-      setSelected(selected.concat(e.target.selected))
+    if (e.target.className.includes("Card") && selected.length < 3) {
+      e.target.className = "Yellow noSelect";
+      setSelected(selected.concat(e.target.selected));
       
-    } else if (e.target.className.includes("toYellow")) {
-      e.target.className = "Card noSelect"
-      setActives(actives - 1)
+    } else if (e.target.className.includes("Yellow")) {
+      e.target.className = "Card noSelect";
       setSelected(selected.filter((yeah)=> {
-        return yeah != e.target.selected
+        return yeah != e.target.selected;
       }))
     }      
   }
@@ -28,59 +26,52 @@ const Cardi = ({setActives, actives, selected, setSelected, custom}) => {
   )
 }
 
-
-
 const App = () => {
   
-  const [actives, setActives] = useState(0);
   const [selected, setSelected] = useState([]);
-  let numberOfSets = 0;
+  const [totalSets, setTotalSets] = useState(0);
 
   function checkSet () {
     let truths = 0;
-    for (let x = 0; x < 5; x++) {
-      let truthtest = []
-      selected.forEach(element => truthtest.push(element[x]))
-      let truthset = new Set(truthtest);
-      if (truthset.size == 3 || truthset.size == 1) {
-        truths += 1
+    for (let property = 0; property < NUM_PROPERTIES; property++) {
+      let truthTest = [];
+      selected.forEach(element => truthTest.push(element[property]));
+      let truthSet = new Set(truthTest);
+      // Check for all different or all the same property in selected set 
+      if (truthSet.size == 3 || truthSet.size == 1) {
+        truths += 1;
       }
     }
     
-    if (truths == 5) {
-      console.log("YEEHAW")
-      numberOfSets += 1
-      truths = 0
+    if (truths == NUM_PROPERTIES) {
+      setTotalSets(totalSets + 1);
+      truths = 0;
     }
-      
   }
 
   useEffect(()=>{
-
     if (selected.length == 3) {
-      checkSet()
+      checkSet();
     }
-
-
   }, [selected]);
 
   return (
     <div>
-      <div>Number of Sets: {numberOfSets} </div>
+      <div>Number of Sets: {totalSets} </div>
       <div className = "Container">    
-      <Cardi custom = "HEBBA" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLI" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLE" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLO" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLU" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLY" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLQ" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLZ" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLB" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLN" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLM" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-      <Cardi custom = "HELLC" selected = {selected} setSelected = {setSelected} actives = {actives} setActives = {setActives}></Cardi>
-    </div>
+        <SetCard custom = "EBBA" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLI" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLE" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLO" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLU" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLY" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLQ" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLZ" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLB" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLN" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLM" selected = {selected} setSelected = {setSelected}></SetCard>
+        <SetCard custom = "ELLC" selected = {selected} setSelected = {setSelected}></SetCard>
+      </div>
     </div>
     
   )
