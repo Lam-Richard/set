@@ -74,7 +74,7 @@ function generateCardGrid(){
 
 let startingGrid = generateCardGrid()
 
-const Timer = () => {
+const Timer = ({timer, setTimer}) => {
   
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -95,13 +95,6 @@ const Timer = () => {
       }
     }, [delay]);
   }
-
-  
-  let currentTime = new Date();
-  let expireTime = moment(currentTime).add(5, 'm').toDate();
-  let remaining = (expireTime-currentTime)/1000;
-
-  const [timer, setTimer] = useState(remaining);
 
   useInterval(() => {
     // Your custom logic here
@@ -139,6 +132,12 @@ const SetList = ({foundSets}) => {
   })
 }
 
+let currentTime = new Date();
+let expireTime = moment(currentTime).add(5, 'm').toDate();
+let remaining = (expireTime-currentTime)/1000;
+
+
+
 const App = () => {
 
   const classes = useStyles();
@@ -146,11 +145,25 @@ const App = () => {
   const [totalSets, setTotalSets] = useState(0);
   const [cards, setCards] = useState(startingGrid);
   const [foundSets, setFoundSets] = useState([]);
+  const [timer, setTimer] = useState(remaining);
 
 
   function shuffle () {
     let newGrid = generateCardGrid();
     setCards(newGrid);
+    setSelected([]);
+  }
+
+  function restart () {
+    setSelected([]);
+    setTotalSets(0);
+    setCards(generateCardGrid());
+    setFoundSets([]);
+    let currentTime = new Date();
+    let expireTime = moment(currentTime).add(5, 'm').toDate();
+    let remaining = (expireTime-currentTime)/1000;
+    setTimer(remaining);
+
   }
 
   function checkSet () {
@@ -210,7 +223,10 @@ const App = () => {
       <Button onClick={shuffle} variant="contained" color="primary">
           SHUFFLE
       </Button>
-      <Timer></Timer>
+      <Button onClick={restart} variant="contained" color="primary">
+        RESTART GAME
+      </Button>
+      <Timer timer={timer} setTimer={setTimer} ></Timer>
     </div>
   </div>
   )
