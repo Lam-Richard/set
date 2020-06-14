@@ -128,7 +128,7 @@ const App = () => {
   return (
   <div>
     <div className = "Container" style={{float:"left"}}>    
-      {cards.map(card => <SetCard  card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
+      {cards.map(card => <SetCard  key={card + Math.random().toString()} card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
     </div>
     <div className = "Container" style={{float:"right", width:900, height:900}}>
       <div> Number of Sets Found: {totalSets} </div>
