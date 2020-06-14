@@ -5,6 +5,16 @@ import './App.css';
 const numProperties = 4; 
 
 const SetCard = ({card, selected, setSelected}) => {
+  const [yellow, setYellow] = useState(false);
+
+  function checkSelect(card) {
+    for(let i = 0; i < selected.length; i++){
+      if (card == selected[i]){
+        return true;
+      }
+    }
+    return false; 
+  }
 
   function handleClick(e) {
     if (e.target.className.includes("Card") && selected.length < 3) {
@@ -20,7 +30,7 @@ const SetCard = ({card, selected, setSelected}) => {
   };
   
   return (
-    <div selected={card} onClick={handleClick} className="Card noSelect">
+    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "red" : "whitesmoke"}}>
       <img src={require('./SetCards/'+ card + '.png.jpg')} /> 
     </div> 
   )
@@ -57,6 +67,7 @@ const App = () => {
   const [selected, setSelected] = useState([]);
   const [totalSets, setTotalSets] = useState(0);
   const [cards, setCards] = useState(startingGrid);
+  const [foundSets, setFoundSets] = useState([]);
 
   function checkSet () {
     let truths = 0;
@@ -72,7 +83,13 @@ const App = () => {
     
     if (truths === numProperties) {
       setTotalSets(totalSets + 1);
-      truths = 0;
+      let tempSet = selected; 
+      let tempFound = foundSets
+      setFoundSets(tempFound.concat(tempSet));
+      setCards(cards.filter(card => {
+        return card != tempSet[0] && card != tempSet[1] && card != tempSet[2];
+      }))
+      setSelected([]);
     }
   }
 
@@ -84,20 +101,8 @@ const App = () => {
 
   return (
   <div>
-   
     <div className = "Container" style={{float:"left"}}>    
-      <SetCard  card={cards[0]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[1]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[2]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[3]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[4]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[5]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[6]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[7]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[8]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[9]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[10]} selected={selected} setSelected ={setSelected}></SetCard>
-      <SetCard  card={cards[11]} selected={selected} setSelected ={setSelected}></SetCard>
+      {cards.map(card => <SetCard  card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
     </div>
     <div className = "Container" style={{float:"right", width:900, height:900}}>
       <div> Number of Sets Found: {totalSets} </div>
