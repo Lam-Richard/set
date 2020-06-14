@@ -115,6 +115,30 @@ const Timer = () => {
   
 }
 
+const EachSet = ({oneSet}) => {
+  console.log(oneSet)
+  return (
+    <div>
+      <div>
+        <img src = {require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
+      </div>
+      <div>
+        <img src = {require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
+      </div>
+      <div>
+        <img src = {require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
+      </div>
+    </div>
+  )
+}
+
+const SetList = ({foundSets}) => {
+  console.log(foundSets)
+  return foundSets.map(found => {
+    return <EachSet oneSet={found}></EachSet>
+  })
+}
+
 const App = () => {
 
   const classes = useStyles();
@@ -144,20 +168,27 @@ const App = () => {
     if (truths === numProperties) {
       setTotalSets(totalSets + 1);
       let tempSet = selected; 
-      let tempFound = foundSets
-      setFoundSets(tempFound.concat(tempSet));
+      let tempFound = foundSets;
+      tempFound = tempFound.push([selected[0], selected[1], selected[2]])
+      console.log(foundSets)
       let tempCards = cards.filter(card => {
           return card != tempSet[0] && card != tempSet[1] && card != tempSet[2];
         });
-      
-      let tempCards1 = tempCards.concat([generateCard(),generateCard(),generateCard()]);
-      
 
-      setCards(tempCards1);
+      while (tempCards.length != 12) {
+        let newCard = generateCard();
+        if (tempCards.includes(newCard) == false) {
+          tempCards =tempCards.concat(newCard);
+        }
+      };
+
+      setCards(tempCards);
 
       setSelected([]);
     }
-  }
+  };
+
+
 
   useEffect(()=>{
     if (selected.length === 3) {
@@ -168,10 +199,11 @@ const App = () => {
   return (
   <div>
     <div className = "Container" style={{float:"left"}}>    
-      {cards.map(card => <SetCard  key={card + Math.random().toString()} card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
+      {cards.map(card => <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
     </div>
     <div className = "Container" style={{float:"right", width:900, height:900}}>
       <div> Number of Sets Found: {totalSets} </div>
+      <SetList foundSets={foundSets}></SetList>
     </div>
 
     <div className={classes.root}>
