@@ -118,15 +118,15 @@ const Timer = () => {
 const EachSet = ({oneSet}) => {
   console.log(oneSet)
   return (
-    <div>
+    <div className="eachSet">
       <div>
-        <img src = {require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
+        <img className="eachPic" src={require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
       </div>
       <div>
-        <img src = {require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
+        <img className="eachPic" src={require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
       </div>
       <div>
-        <img src = {require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
+        <img className="eachPic" src={require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
       </div>
     </div>
   )
@@ -201,9 +201,9 @@ const App = () => {
     <div className = "Container" style={{float:"left"}}>    
       {cards.map(card => <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
     </div>
-    <div className = "Container" style={{float:"right", width:900, height:900}}>
-      <div> Number of Sets Found: {totalSets} </div>
-      <SetList foundSets={foundSets}></SetList>
+    <div className = "Container setContainer" style={{float:"right", width:900, height:900}}>
+      <div className = "foundMessage"> Number of Sets Found: {totalSets} </div>
+      <SetList className = "foundSetHolder" foundSets={foundSets}></SetList>
     </div>
 
     <div className={classes.root}>
