@@ -21,18 +21,17 @@ const SetCard = ({card, selected, setSelected}) => {
   
   return (
     <div selected={card} onClick={handleClick} className="Card noSelect">
-      <h1> {card} </h1>
-      {/*<img src = "https://cdn.shopify.com/s/files/1/0200/7616/products/0003_blue-wheel-playing-cards-jack_1024x1024.png?v=1581782436"/> */}
+      <img src={require('./SetCards/'+ card + '.png.jpg')} /> 
     </div> 
   )
 }
 
 function generateCard() {
-  let shapes = ["W", "O", "D"];
-  let colors = ["G", "R", "P"];
+  let shapes = ["w", "o", "d"];
+  let colors = ["g", "p", "r"];
+  let fillings = ["e", "l", "s"];
   let numbers = ["1", "2", "3"];
-  let fillings = ["E", "L", "S"];
-  let properties = [shapes, colors, numbers, fillings]
+  let properties = [shapes, colors, fillings, numbers]
   let card = ""
   for (let property = 0; property < properties.length; property++) {
     card += properties[property][Math.floor(Math.random() * 3)];
