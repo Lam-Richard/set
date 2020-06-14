@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -74,9 +74,49 @@ function generateCardGrid(){
 
 let startingGrid = generateCardGrid()
 
+const Timer = () => {
+  
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+  
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+
+  
+  let currentTime = new Date();
+  let expireTime = moment(currentTime).add(5, 'm').toDate();
+  let remaining = (expireTime-currentTime)/1000;
+
+  const [timer, setTimer] = useState(remaining);
+
+  useInterval(() => {
+    // Your custom logic here
+    if (timer != 0) {
+      setTimer(timer - 1);
+    }
+    
+  }, 1000);
+  
+  return <h1>Time Left: {timer}s</h1>
+  
+}
 
 const App = () => {
-    
+
   const classes = useStyles();
   const [selected, setSelected] = useState([]);
   const [totalSets, setTotalSets] = useState(0);
@@ -138,6 +178,7 @@ const App = () => {
       <Button onClick={shuffle} variant="contained" color="primary">
           SHUFFLE
       </Button>
+      <Timer></Timer>
     </div>
   </div>
   )
