@@ -2,10 +2,10 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
 
-const NUM_PROPERTIES = 4; 
+const numProperties = 4; 
 
-const SetCard = ({selected, setSelected, custom}) => {
-  
+const SetCard = ({card, selected, setSelected}) => {
+
   function handleClick(e) {
     if (e.target.className.includes("Card") && selected.length < 3) {
       e.target.className = "Yellow noSelect";
@@ -17,64 +17,99 @@ const SetCard = ({selected, setSelected, custom}) => {
         return yeah != e.target.selected;
       }))
     }      
-  }
+  };
   
   return (
-    <div selected = {custom} onClick = {handleClick} className = "Card noSelect">
-        <img src = "https://cdn.shopify.com/s/files/1/0200/7616/products/0003_blue-wheel-playing-cards-jack_1024x1024.png?v=1581782436"/>
+    <div selected={card} onClick={handleClick} className="Card noSelect">
+      <h1> {card} </h1>
+      {/*<img src = "https://cdn.shopify.com/s/files/1/0200/7616/products/0003_blue-wheel-playing-cards-jack_1024x1024.png?v=1581782436"/> */}
     </div> 
   )
 }
+
+function generateCard() {
+  let shapes = ["W", "O", "D"];
+  let colors = ["G", "R", "P"];
+  let numbers = ["1", "2", "3"];
+  let fillings = ["E", "L", "S"];
+  let properties = [shapes, colors, numbers, fillings]
+  let card = ""
+  for (let property = 0; property < properties.length; property++) {
+    card += properties[property][Math.floor(Math.random() * 3)];
+  }
+  return card
+};
+
+function generateCardGrid(){
+  let grid = [];
+  while (grid.length != 12) {
+    let generated = generateCard()
+    if (grid.includes(generated) == false) {
+      grid.push(generated)
+    }
+  }
+  return grid
+}
+
+let startingGrid = generateCardGrid()
 
 const App = () => {
   
   const [selected, setSelected] = useState([]);
   const [totalSets, setTotalSets] = useState(0);
+  const [cards, setCards] = useState(startingGrid);
 
   function checkSet () {
     let truths = 0;
-    for (let property = 0; property < NUM_PROPERTIES; property++) {
+    for (let property = 0; property < numProperties; property++) {
       let truthTest = [];
       selected.forEach(element => truthTest.push(element[property]));
       let truthSet = new Set(truthTest);
       // Check for all different or all the same property in selected set 
-      if (truthSet.size == 3 || truthSet.size == 1) {
+      if (truthSet.size === 3 || truthSet.size === 1) {
         truths += 1;
       }
     }
     
-    if (truths == NUM_PROPERTIES) {
+    if (truths === numProperties) {
       setTotalSets(totalSets + 1);
       truths = 0;
     }
   }
 
   useEffect(()=>{
-    if (selected.length == 3) {
+    if (selected.length === 3) {
       checkSet();
     }
   }, [selected]);
 
   return (
-    <div>
-      <div>Number of Sets: {totalSets} </div>
-      <div className = "Container">    
-        <SetCard custom = "EBBA" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLI" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLE" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLO" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLU" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLY" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLQ" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLZ" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLB" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLN" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLM" selected = {selected} setSelected = {setSelected}></SetCard>
-        <SetCard custom = "ELLC" selected = {selected} setSelected = {setSelected}></SetCard>
-      </div>
+  <div>
+   
+    <div className = "Container" style={{float:"left"}}>    
+      <SetCard  card={cards[0]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[1]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[2]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[3]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[4]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[5]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[6]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[7]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[8]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[9]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[10]} selected={selected} setSelected ={setSelected}></SetCard>
+      <SetCard  card={cards[11]} selected={selected} setSelected ={setSelected}></SetCard>
     </div>
-    
+    <div className = "Container" style={{float:"right", width:900, height:900}}>
+      <div> Number of Sets Found: {totalSets} </div>
+    </div>
+  </div>
   )
 };
 
 export default App;
+
+
+
+   
+    
