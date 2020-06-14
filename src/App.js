@@ -2,11 +2,23 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
 
+
 const numProperties = 4; 
 
 const SetCard = ({card, selected, setSelected}) => {
+  const [yellow, setYellow] = useState(false);
+
+  function checkSelect (card) {
+    for(let i = 0; i < selected.length; i++){
+      if (card == selected[i]){
+        return true;
+      }
+    }
+    return false; 
+  }
 
   function handleClick(e) {
+    console.log(selected)
     if (e.target.className.includes("Card") && selected.length < 3) {
       e.target.className = "Yellow noSelect";
       setSelected(selected.concat(e.target.selected));
@@ -18,21 +30,20 @@ const SetCard = ({card, selected, setSelected}) => {
       }))
     }      
   };
-  
   return (
-    <div selected={card} onClick={handleClick} className="Card noSelect">
-      <h1> {card} </h1>
-      {/*<img src = "https://cdn.shopify.com/s/files/1/0200/7616/products/0003_blue-wheel-playing-cards-jack_1024x1024.png?v=1581782436"/> */}
+    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "red" : "whitesmoke"}}>
+      <img src = {require('./SetCards/' + card + '.png.jpg')}/>
+      
     </div> 
   )
 }
 
 function generateCard() {
-  let shapes = ["W", "O", "D"];
-  let colors = ["G", "R", "P"];
+  let shapes = ["w", "o", "d"];
+  let colors = ["g", "r", "p"];
+  let fillings = ["e", "l", "s"];
   let numbers = ["1", "2", "3"];
-  let fillings = ["E", "L", "S"];
-  let properties = [shapes, colors, numbers, fillings]
+  let properties = [shapes, colors, fillings, numbers]
   let card = ""
   for (let property = 0; property < properties.length; property++) {
     card += properties[property][Math.floor(Math.random() * 3)];
@@ -58,6 +69,7 @@ const App = () => {
   const [selected, setSelected] = useState([]);
   const [totalSets, setTotalSets] = useState(0);
   const [cards, setCards] = useState(startingGrid);
+  const [foundSets, setFoundSets] = useState([]);
 
   function checkSet () {
     let truths = 0;
@@ -73,8 +85,15 @@ const App = () => {
     
     if (truths === numProperties) {
       setTotalSets(totalSets + 1);
-      truths = 0;
+      let tempSet = selected
+      setFoundSets(foundSets.push[tempSet]);
+      
+      setCards(cards.filter(card => {
+        return card != tempSet[0] && card != tempSet[1] && card != tempSet[2];
+      }))
+      setSelected([]);
     }
+    
   }
 
   useEffect(()=>{
