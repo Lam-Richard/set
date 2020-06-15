@@ -1,8 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import './App.css';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { Button, Grid, Container} from '@material-ui/core/';
 import moment from 'moment';
 moment().format();
 
@@ -12,12 +11,22 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  setCards: {
+    pointerEvents:"none",
+    align:"center",
+    padding:"5px",
+    margin:"5px", 
+  },
+  gameBanner:{
+    fontSize:100,
+    textAlign:"center",
+  },
 }));
-
 
 const numProperties = 4; 
 
 const SetCard = ({card, selected, setSelected}) => {
+  const classes = useStyles();
   const [yellow, setYellow] = useState(false);
 
   function checkSelect(card) {
@@ -40,10 +49,11 @@ const SetCard = ({card, selected, setSelected}) => {
         return yeah != e.target.selected;
       }))
     }      
-  };
+  }
+
   return (
-    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "red" : "whitesmoke"}}>
-      <img src={require('./SetCards/'+ card + '.png.jpg')} /> 
+    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "lightblue" : "whitesmoke", width:170, height:280, margin:0}}>
+      <img src={require('./SetCards/'+ card + '.png.jpg')} width="150" height="260" className={classes.setCards} /> 
     </div> 
   )
 }
@@ -74,7 +84,7 @@ function generateCardGrid(){
 
 let startingGrid = generateCardGrid()
 
-const Timer = ({timer, setTimer}) => {
+const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
   
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -101,8 +111,13 @@ const Timer = ({timer, setTimer}) => {
     if (timer != 0) {
       setTimer(timer - 1);
     }
+    else{
+      if (gameOver == false){
+        setGameOver(true)
+      }
+    }
     
-  }, 1000);
+  }, 60);
   
   return <h1>Time Left: {timer}s</h1>
   
@@ -111,15 +126,15 @@ const Timer = ({timer, setTimer}) => {
 const EachSet = ({oneSet}) => {
   console.log(oneSet)
   return (
-    <div className="eachSet">
+    <div style={{display: "flex", flexFlow: "row nowrap", justifyContent: "center"}}className="eachSet">
       <div>
-        <img className="eachPic" src={require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
+        <img width="150" height="260" src={require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
       </div>
       <div>
-        <img className="eachPic" src={require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
+        <img width="150" height="260" src={require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
       </div>
       <div>
-        <img className="eachPic" src={require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
+        <img width="150" height="260" src={require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
       </div>
     </div>
   )
@@ -146,6 +161,7 @@ const App = () => {
   const [cards, setCards] = useState(startingGrid);
   const [foundSets, setFoundSets] = useState([]);
   const [timer, setTimer] = useState(remaining);
+  const [gameOver, setGameOver] = useState(false);
 
 
   function shuffle () {
@@ -163,7 +179,7 @@ const App = () => {
     let expireTime = moment(currentTime).add(5, 'm').toDate();
     let remaining = (expireTime-currentTime)/1000;
     setTimer(remaining);
-
+    setGameOver(false);
   }
 
   function checkSet () {
@@ -182,7 +198,7 @@ const App = () => {
       setTotalSets(totalSets + 1);
       let tempSet = selected; 
       let tempFound = foundSets;
-      tempFound = tempFound.push([selected[0], selected[1], selected[2]])
+      tempFound = tempFound.unshift([selected[0], selected[1], selected[2]])
       console.log(foundSets)
       let tempCards = cards.filter(card => {
           return card != tempSet[0] && card != tempSet[1] && card != tempSet[2];
@@ -210,24 +226,38 @@ const App = () => {
   }, [selected]);
 
   return (
-  <div>
-    <div className = "Container" style={{float:"left"}}>    
-      {cards.map(card => <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard>)}
-    </div>
-    <div className = "Container setContainer" style={{float:"right", width:900, height:900}}>
-      <div className = "foundMessage"> Number of Sets Found: {totalSets} </div>
-      <SetList className = "foundSetHolder" foundSets={foundSets}></SetList>
-    </div>
 
-    <div className={classes.root}>
-      <Button onClick={shuffle} variant="contained" color="primary">
-          SHUFFLE
-      </Button>
-      <Button onClick={restart} variant="contained" color="primary">
-        RESTART GAME
-      </Button>
-      <Timer timer={timer} setTimer={setTimer} ></Timer>
-    </div>
+  <div>
+    { gameOver ? <div> <p> Game Over ya fool </p>        <Button style={{width:"30%"}} onClick={restart} variant="contained" color="primary">
+          RESTART
+          </Button></div> :
+
+    <div style={{display:"flex", flexFlow:"row nowrap"}}>
+      <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"50%"}}>
+        <h1 className={classes.gameBanner}>SET! The Game</h1>
+        <Timer timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
+        <div style={{display:"flex", justifyContent:"center", width:300}}>
+          <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
+              SHUFFLE
+          </Button>
+        </div>
+        <div>
+          <h3> Number of Sets Found: {totalSets} </h3> 
+          <div style={{overflowY: "scroll", maxHeight: 280}}>
+            <SetList  foundSets={foundSets}></SetList>
+          </div>
+        </div>
+      </div>
+      <div style={{width:"40%"}}>
+        <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
+          {cards.map(card => 
+          <Grid item spacing={2} style={{padding:10}}> 
+            <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard> 
+          </Grid>)}
+        </Grid>
+      </div> 
+    </div> }
+
   </div>
   )
 };
