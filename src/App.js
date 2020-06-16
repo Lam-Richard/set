@@ -3,7 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Container} from '@material-ui/core/';
 import moment from 'moment';
+import SwipeableTemporaryDrawer from "./drawer";
+import { SetList } from "./setList"; 
 moment().format();
+
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +25,13 @@ const useStyles = makeStyles((theme) => ({
   gameBanner:{
     fontSize:100,
     textAlign:"center",
+  },
+  list: {
+    width: 250,
+    height: 1000, 
+  },
+  fullList: {
+    width: 'auto',
   },
 }));
 
@@ -117,13 +129,13 @@ const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
       }
     }
     
-  }, 60);
+  }, 1000);
   
   return <h1>Time Left: {timer}s</h1>
   
 }
 
-const EachSet = ({oneSet}) => {
+/*const EachSet = ({oneSet}) => {
   console.log(oneSet)
   return (
     <div style={{display: "flex", flexFlow: "row nowrap", justifyContent: "center"}}className="eachSet">
@@ -138,14 +150,14 @@ const EachSet = ({oneSet}) => {
       </div>
     </div>
   )
-}
+}*/
 
-const SetList = ({foundSets}) => {
+/*const SetList = ({foundSets}) => {
   console.log(foundSets)
   return foundSets.map(found => {
     return <EachSet oneSet={found}></EachSet>
   })
-}
+}*/
 
 let currentTime = new Date();
 let expireTime = moment(currentTime).add(5, 'm').toDate();
@@ -170,17 +182,7 @@ const App = () => {
     setSelected([]);
   }
 
-  function restart () {
-    setSelected([]);
-    setTotalSets(0);
-    setCards(generateCardGrid());
-    setFoundSets([]);
-    let currentTime = new Date();
-    let expireTime = moment(currentTime).add(5, 'm').toDate();
-    let remaining = (expireTime-currentTime)/1000;
-    setTimer(remaining);
-    setGameOver(false);
-  }
+  
 
   function checkSet () {
     let truths = 0;
@@ -217,6 +219,18 @@ const App = () => {
     }
   };
 
+  function restart () {
+    setSelected([]);
+    setTotalSets(0);
+    setCards(generateCardGrid());
+    setFoundSets([]);
+    let currentTime = new Date();
+    let expireTime = moment(currentTime).add(5, 'm').toDate();
+    let remaining = (expireTime-currentTime)/1000;
+    setTimer(remaining);
+    setGameOver(false);
+  }
+
 
 
   useEffect(()=>{
@@ -228,9 +242,8 @@ const App = () => {
   return (
 
   <div>
-    { gameOver ? <div> <p> Game Over ya fool </p>        <Button style={{width:"30%"}} onClick={restart} variant="contained" color="primary">
-          RESTART
-          </Button></div> :
+     
+
 
     <div style={{display:"flex", flexFlow:"row nowrap"}}>
       <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"50%"}}>
@@ -255,8 +268,10 @@ const App = () => {
             <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard> 
           </Grid>)}
         </Grid>
+        <SwipeableTemporaryDrawer gameOver={gameOver} totalSets={totalSets} foundSets={foundSets}>
+        </SwipeableTemporaryDrawer>
       </div> 
-    </div> }
+    </div> 
 
   </div>
   )
@@ -267,4 +282,3 @@ export default App;
 
 
    
-    
