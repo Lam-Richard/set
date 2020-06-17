@@ -335,7 +335,7 @@ const App = () => {
   <div>
      
     <div style={{display:"flex", flexFlow:"row nowrap"}}>
-      <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"50%"}}>
+      <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"55%"}}>
         <h1 className={classes.gameBanner}>SET! The Game</h1>
         <Timer paused={paused} timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
         <div style={{display:"flex", justifyContent:"center", width:300}}>
@@ -369,7 +369,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div style={{width:"42%"}}>
+      <div style={{width:"45%"}}>
         <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
           {cards.map(card => 
           <Grid item spacing={2} style={{padding:10}}> 
