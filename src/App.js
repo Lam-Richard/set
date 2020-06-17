@@ -174,12 +174,14 @@ const App = () => {
   const [foundSets, setFoundSets] = useState([]);
   const [timer, setTimer] = useState(remaining);
   const [gameOver, setGameOver] = useState(false);
+  const [shufCount, setShufCount] = useState(0);
 
 
   function shuffle () {
     let newGrid = generateCardGrid();
     setCards(newGrid);
     setSelected([]);
+    setShufCount(shufCount + 1);
   }
 
   
@@ -250,9 +252,13 @@ const App = () => {
         <h1 className={classes.gameBanner}>SET! The Game</h1>
         <Timer timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
         <div style={{display:"flex", justifyContent:"center", width:300}}>
-          <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
-              SHUFFLE
-          </Button>
+          <div style = {{display: "flex", flexFlow: "column nowrap"}}>
+            <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
+                SHUFFLE
+            </Button>
+            <p style={{fontStyle: "oblique"}}>You've shuffled {shufCount} times!</p>
+          </div>
+         
         </div>
         <div>
           <h3> Number of Sets Found: {totalSets} </h3> 
