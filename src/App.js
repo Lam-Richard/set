@@ -165,6 +165,12 @@ let remaining = (expireTime-currentTime)/1000;
 
 
 
+const EarlyEndGame = ({setGameOver}) => {
+  return (
+    <Button style={{borderRadius:10, size:"large"}} onClick={setGameOver} variant="contained" color="primary">END GAME</Button>
+  )
+}
+
 const App = () => {
 
   const classes = useStyles();
@@ -253,11 +259,14 @@ const App = () => {
         <Timer timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
         <div style={{display:"flex", justifyContent:"center", width:300}}>
           <div style = {{display: "flex", flexFlow: "column nowrap"}}>
+            <EarlyEndGame setGameOver = {setGameOver}></EarlyEndGame>
+            <br></br>
             <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
                 SHUFFLE
             </Button>
             <p style={{fontStyle: "oblique"}}>You've shuffled {shufCount} times!</p>
           </div>
+          
          
         </div>
         <div>
