@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 const numProperties = 4; 
 
-const SetCard = ({card, selected, setSelected}) => {
+const SetCard = ({card, selected, setSelected, hintSet}) => {
   const classes = useStyles();
   const [yellow, setYellow] = useState(false);
 
@@ -65,7 +65,7 @@ const SetCard = ({card, selected, setSelected}) => {
   }
 
   return (
-    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "lightblue" : "whitesmoke", width:150, height:260, margin:0}}>
+    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "lightblue" : (hintSet.includes(card) ? "lavender" : "whitesmoke") , width:150, height:260, margin:0}}>
       <img src={require('./SetCards/'+ card + '.png.jpg')} width="130" height="240" className={classes.setCards} /> 
     </div> 
   )
@@ -188,6 +188,7 @@ const App = () => {
   const [shufCount, setShufCount] = useState(0);
   const [hintCount, setHintCount] = useState(0);
   const [hintMSG, setHintMSG] = useState([]);
+  const [hintSet, setHintSet] = useState([]);
 
   function getHint () {
     let setFound = false;
@@ -212,14 +213,15 @@ const App = () => {
         }
         if (cards.includes(similarityString)){
           setFound = true;
-          setHintMSG([cards[firstIndex], cards[secondIndex], similarityString]);
+          setHintSet([cards[firstIndex], cards[secondIndex], similarityString]);
+          setSelected([]);
         }
       }
 
     }
 
-    if (setFound === false){
-      setHintMSG(["NO SETS FOUND. RESHUFFLE"]);
+    if (setFound === false) {
+      setHintMSG(["RESHUFFLE"]);
     }
   }
 
@@ -252,6 +254,9 @@ const App = () => {
     setCards(newGrid);
     setSelected([]);
     setShufCount(shufCount + 1);
+    setHintSet([]);
+    setHintMSG([]);
+
   }
 
  
@@ -327,18 +332,25 @@ const App = () => {
             <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
                 SHUFFLE
             </Button>
-            <p style={{fontStyle: "oblique"}}>You've shuffled {shufCount} times!</p>
+            <br></br>
             <Button style={{borderRadius:10, size:"large"}} onClick={getHint} variant="contained" color="primary">
                 HINT
             </Button>
-            <p> {hintMSG.length === 1 ? hintMSG[0] : hintMSG}</p>
-            <p style={{fontStyle: "oblique"}}>You've used {hintCount} hints!</p>
+            <p style = {{textAlign: "center"}}>{hintMSG.length === 1 ? hintMSG[0] : null}</p>
+            
           </div>
         </div>
         <div>
-          <h3> Number of Sets Found: {totalSets} </h3> 
+          
+          <h3 style={{paddingBottom: "5px", textAlign: "center"}}> Number of Sets Found: {totalSets} </h3>
+          
           <div style={{overflowY: "scroll", maxHeight: 280}}>
             <SetList  foundSets={foundSets}></SetList>
+          </div>
+          <div style={{display: "flex", justifyContent: "space-around", flexFlow: "row nowrap"}}>
+            <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>You've shuffled {shufCount} times!</h5>
+            
+            <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>&nbsp;&nbsp;&nbsp; You've used {hintCount} hints!</h5>
           </div>
         </div>
       </div>
@@ -346,7 +358,7 @@ const App = () => {
         <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
           {cards.map(card => 
           <Grid item spacing={2} style={{padding:10}}> 
-            <SetCard card={card} selected={selected} setSelected ={setSelected}></SetCard> 
+            <SetCard hintSet={hintSet} card={card} selected={selected} setSelected ={setSelected}></SetCard> 
           </Grid>)}
         </Grid>
         <SwipeableTemporaryDrawer gameOver={gameOver} totalSets={totalSets} foundSets={foundSets}>
