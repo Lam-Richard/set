@@ -5,6 +5,7 @@ import { Button, Grid, Container} from '@material-ui/core/';
 import moment from 'moment';
 import SwipeableTemporaryDrawer from "./drawer";
 import { SetList } from "./setList"; 
+import './App.css';
 moment().format();
 
 
@@ -98,6 +99,8 @@ let startingGrid = generateCardGrid()
 
 const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
   
+  const [timeColor, setTimeColor] = useState("black");
+
   function useInterval(callback, delay) {
     const savedCallback = useRef();
   
@@ -128,10 +131,14 @@ const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
         setGameOver(true)
       }
     }
+
+    if (timer == 30) {
+      setTimeColor("red");
+    }
     
   }, 1000);
   
-  return <h1>Time Left: {timer}s</h1>
+  return <h1 style = {{color: timeColor }}>Time Left: {timer}s</h1>
   
 }
 
