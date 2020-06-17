@@ -20,11 +20,11 @@ const useStyles = makeStyles({
 
 
 
-const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
+const AlertDialog = ({paused, setPaused}) => {
   const classes = useStyles();
 
-  function refreshPage() {
-    window.location.reload(false);
+  function unpause(){
+      setPaused(false);
   }
 
   const list = (anchor) => (
@@ -34,35 +34,30 @@ const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
       })}
       role="presentation"
     >
-        <div style={{display: "flex", flexFlow: "column nowrap", alignItems: "center"}}>
+        <div style={{display: "flex", flexFlow: "column nowrap", alignItems: "center", justifyContent: "center"}}>
             <br></br>
             <br></br>
-            <div style={{height: "80%", display: "flex", justifyContent: "center", fontSize: 100}}>
-                TIME'S UP!
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
+            <div style={{height: "80%", display: "flex", justifyContent: "center", fontSize: 100, alignSelf: "center"}}>
+               GAME PAUSED
             </div>
-            <div style = {{fontSize: 50, fontStyle: "oblique"}}>Final Score: {totalSets}</div>
-            <br></br>
-            <br></br>
-            <div style={{overflowY: "scroll", maxHeight: 280}}>
-            <SetList foundSets={foundSets}></SetList>
-            </div>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-            
-
-
             <div>
-                <Button style={{borderRadius:10, size:"large"}} onClick={refreshPage} variant="contained" color="primary">
-                    Play Again
+                <Button style={{borderRadius:10, size:"large"}} onClick={unpause} variant="contained" color="primary">
+                    RESUME
                 </Button>
             </div>
-            
         </div>
-        
-
     </div>
   );
 
@@ -73,7 +68,8 @@ const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
           <SwipeableDrawer
             transitionDuration={900}
             anchor={anchor}
-            open={gameOver}
+            open={paused}
+            style={{opacity:0.95}}
           >
             {list(anchor)}
           </SwipeableDrawer>
@@ -83,4 +79,4 @@ const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
   );
 }
 
-export default SwipeableTemporaryDrawer;
+export default AlertDialog;

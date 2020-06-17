@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, Container} from '@material-ui/core/';
 import moment from 'moment';
 import SwipeableTemporaryDrawer from "./drawer";
+import AlertDialog from "./pauseScreen";
 import { SetList } from "./setList"; 
 import './App.css';
 moment().format();
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   fullList: {
     width: 'auto',
   },
+  
 }));
 
 const numProperties = 4; 
@@ -97,7 +99,7 @@ function generateCardGrid(){
 
 let startingGrid = generateCardGrid()
 
-const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
+const Timer = ({timer, setTimer, gameOver, setGameOver, paused}) => {
   
   const [timeColor, setTimeColor] = useState("black");
 
@@ -123,11 +125,13 @@ const Timer = ({timer, setTimer, gameOver, setGameOver}) => {
 
   useInterval(() => {
     // Your custom logic here
-    if (timer != 0) {
+    if (timer != 0 && paused == false) {
       setTimer(timer - 1);
+    } else if (timer != 0 && paused == true) {
+      return
     }
     else{
-      if (gameOver == false){
+      if (gameOver == false) {
         setGameOver(true)
       }
     }
@@ -189,6 +193,7 @@ const App = () => {
   const [hintCount, setHintCount] = useState(0);
   const [hintMSG, setHintMSG] = useState([]);
   const [hintSet, setHintSet] = useState([]);
+  const [paused, setPaused] = useState(false);
 
   function getHint () {
     let setFound = false;
@@ -317,6 +322,14 @@ const App = () => {
   }, [selected]);
 
   
+  function togglePause () {
+    if (paused == false) {
+      setPaused(true);
+    } else {
+      setPaused(false);
+    }
+  }
+
   return (
 
   <div>
@@ -324,10 +337,10 @@ const App = () => {
     <div style={{display:"flex", flexFlow:"row nowrap"}}>
       <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"50%"}}>
         <h1 className={classes.gameBanner}>SET! The Game</h1>
-        <Timer timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
+        <Timer paused={paused} timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
         <div style={{display:"flex", justifyContent:"center", width:300}}>
           <div style = {{display: "flex", flexFlow: "column nowrap"}}>
-            <EarlyEndGame setGameOver = {setGameOver}></EarlyEndGame>
+            <Button style={{borderRadius:10, size: "large"}} onClick={togglePause} variant="contained" color="primary"> PAUSE </Button>
             <br></br>
             <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
                 SHUFFLE
@@ -336,6 +349,8 @@ const App = () => {
             <Button style={{borderRadius:10, size:"large"}} onClick={getHint} variant="contained" color="primary">
                 HINT
             </Button>
+            <br></br>
+            <EarlyEndGame setGameOver = {setGameOver}></EarlyEndGame>
             <p style = {{textAlign: "center"}}>{hintMSG.length === 1 ? hintMSG[0] : null}</p>
             
           </div>
@@ -363,9 +378,10 @@ const App = () => {
         </Grid>
         <SwipeableTemporaryDrawer gameOver={gameOver} totalSets={totalSets} foundSets={foundSets}>
         </SwipeableTemporaryDrawer>
+        
       </div> 
     </div> 
-
+    { paused ? <AlertDialog paused={paused} setPaused={setPaused}/> : null}
   </div>
   )
 };
