@@ -170,8 +170,6 @@ let currentTime = new Date();
 let expireTime = moment(currentTime).add(5, 'm').toDate();
 let remaining = (expireTime-currentTime)/1000;
 
-
-
 const EarlyEndGame = ({setGameOver}) => {
   return (
     <Button style={{borderRadius:10, size:"large"}} onClick={setGameOver} variant="contained" color="primary">END GAME</Button>
@@ -188,6 +186,65 @@ const App = () => {
   const [timer, setTimer] = useState(remaining);
   const [gameOver, setGameOver] = useState(false);
   const [shufCount, setShufCount] = useState(0);
+  const [hintCount, setHintCount] = useState(0);
+  const [hintMSG, setHintMSG] = useState([]);
+
+  function getHint () {
+    let setFound = false;
+    setHintCount(hintCount + 1);
+    for(let firstIndex = 0; firstIndex < cards.length - 1; firstIndex++){
+      for (let secondIndex = firstIndex + 1; secondIndex < cards.length; secondIndex++){
+        let similarityString = "";
+        let shapes = ["w", "o", "d"];
+        let colors = ["g", "p", "r"];
+        let fillings = ["e", "l", "s"];
+        let numbers = ["1", "2", "3"];
+        let properties = [shapes, colors, fillings, numbers];
+        let similarityTypes = properties;
+        for(let y = 0; y < 4; y++){
+          if (cards[firstIndex][y] == cards[secondIndex][y]){
+            similarityString += cards[firstIndex][y];
+          }
+          else{
+            let voidedWhatever = properties[y].filter(property => property != cards[firstIndex][y] && property != cards[secondIndex][y]);
+            similarityString += voidedWhatever[0];
+          }
+        }
+        if (cards.includes(similarityString)){
+          setFound = true;
+          setHintMSG([cards[firstIndex], cards[secondIndex], similarityString]);
+        }
+      }
+
+    }
+
+    if (setFound === false){
+      setHintMSG(["NO SETS FOUND. RESHUFFLE"]);
+    }
+  }
+
+  {/*setFound = False
+        for firstIndex in range(0, len(self.Board)-1):
+            if setFound == True:
+                break
+            for secondIndex in range(self.Board.index(self.Board[firstIndex])+1, len(self.Board)):
+                similarityString = ""
+                similarityTypes = [self.Numbers, self.Shapes, self.Colors, self.Fillings]
+                
+                for y in range(0, 4):
+
+                    if self.Board[firstIndex][y] == self.Board[secondIndex][y]:
+                        similarityString += self.Board[firstIndex][y]
+                    else:
+                        voidedWhatever = [x for x in similarityTypes[y] if x != self.Board[firstIndex][y] and x != self.Board[secondIndex][y]]
+                        similarityString += voidedWhatever[0] 
+
+                if similarityString in self.Board:
+                    
+                    self.SetExecution(firstIndex, secondIndex, self.Board.index(similarityString))
+                    setFound = True
+  break */}
+
 
 
   function shuffle () {
@@ -197,9 +254,11 @@ const App = () => {
     setShufCount(shufCount + 1);
   }
 
+ 
   
 
   function checkSet () {
+
     let truths = 0;
     for (let property = 0; property < numProperties; property++) {
       let truthTest = [];
@@ -216,7 +275,6 @@ const App = () => {
       let tempSet = selected; 
       let tempFound = foundSets;
       tempFound = tempFound.unshift([selected[0], selected[1], selected[2]])
-      console.log(foundSets)
       let tempCards = cards.filter(card => {
           return card != tempSet[0] && card != tempSet[1] && card != tempSet[2];
         });
@@ -247,19 +305,17 @@ const App = () => {
   }
 
 
-
   useEffect(()=>{
     if (selected.length === 3) {
       checkSet();
     }
   }, [selected]);
 
+  
   return (
 
   <div>
      
-
-
     <div style={{display:"flex", flexFlow:"row nowrap"}}>
       <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"50%"}}>
         <h1 className={classes.gameBanner}>SET! The Game</h1>
@@ -272,9 +328,12 @@ const App = () => {
                 SHUFFLE
             </Button>
             <p style={{fontStyle: "oblique"}}>You've shuffled {shufCount} times!</p>
+            <Button style={{borderRadius:10, size:"large"}} onClick={getHint} variant="contained" color="primary">
+                HINT
+            </Button>
+            <p> {hintMSG.length === 1 ? hintMSG[0] : hintMSG}</p>
+            <p style={{fontStyle: "oblique"}}>You've used {hintCount} hints!</p>
           </div>
-          
-         
         </div>
         <div>
           <h3> Number of Sets Found: {totalSets} </h3> 
@@ -283,7 +342,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div style={{width:"45%"}}>
+      <div style={{width:"42%"}}>
         <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
           {cards.map(card => 
           <Grid item spacing={2} style={{padding:10}}> 
