@@ -64,8 +64,8 @@ const SetCard = ({card, selected, setSelected}) => {
   }
 
   return (
-    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "lightblue" : "whitesmoke", width:170, height:280, margin:0}}>
-      <img src={require('./SetCards/'+ card + '.png.jpg')} width="150" height="260" className={classes.setCards} /> 
+    <div selected={card} onClick={handleClick} className="Card noSelect" style={{backgroundColor: checkSelect(card) ? "lightblue" : "whitesmoke", width:150, height:260, margin:0}}>
+      <img src={require('./SetCards/'+ card + '.png.jpg')} width="130" height="240" className={classes.setCards} /> 
     </div> 
   )
 }
@@ -267,7 +267,7 @@ const App = () => {
           </div>
         </div>
       </div>
-      <div style={{width:"40%"}}>
+      <div style={{width:"45%"}}>
         <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
           {cards.map(card => 
           <Grid item spacing={2} style={{padding:10}}> 
