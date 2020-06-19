@@ -9,9 +9,6 @@ import { SetList } from "./setList";
 import './App.css';
 moment().format();
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -35,10 +32,11 @@ const useStyles = makeStyles((theme) => ({
   fullList: {
     width: 'auto',
   },
-  
 }));
 
+
 const numProperties = 4; 
+
 
 const SetCard = ({card, selected, setSelected, hintSet}) => {
   const classes = useStyles();
@@ -73,6 +71,7 @@ const SetCard = ({card, selected, setSelected, hintSet}) => {
   )
 }
 
+
 function generateCard() {
   let shapes = ["w", "o", "d"];
   let colors = ["g", "p", "r"];
@@ -86,6 +85,7 @@ function generateCard() {
   return card
 };
 
+
 function generateCardGrid(){
   let grid = [];
   while (grid.length != 12) {
@@ -97,7 +97,9 @@ function generateCardGrid(){
   return grid
 }
 
+
 let startingGrid = generateCardGrid()
+
 
 const Timer = ({timer, setTimer, gameOver, setGameOver, paused}) => {
   
@@ -143,42 +145,20 @@ const Timer = ({timer, setTimer, gameOver, setGameOver, paused}) => {
   }, 1000);
   
   return <h1 style = {{color: timeColor }}>Time Left: {timer}s</h1>
-  
 }
 
-/*const EachSet = ({oneSet}) => {
-  console.log(oneSet)
-  return (
-    <div style={{display: "flex", flexFlow: "row nowrap", justifyContent: "center"}}className="eachSet">
-      <div>
-        <img width="150" height="260" src={require('./SetCards/'+ oneSet[0] + '.png.jpg')}/>
-      </div>
-      <div>
-        <img width="150" height="260" src={require('./SetCards/'+ oneSet[1] + '.png.jpg')}/>
-      </div>
-      <div>
-        <img width="150" height="260" src={require('./SetCards/'+ oneSet[2] + '.png.jpg')}/>
-      </div>
-    </div>
-  )
-}*/
-
-/*const SetList = ({foundSets}) => {
-  console.log(foundSets)
-  return foundSets.map(found => {
-    return <EachSet oneSet={found}></EachSet>
-  })
-}*/
 
 let currentTime = new Date();
 let expireTime = moment(currentTime).add(5, 'm').toDate();
 let remaining = (expireTime-currentTime)/1000;
+
 
 const EarlyEndGame = ({setGameOver}) => {
   return (
     <Button style={{borderRadius:10, size:"large"}} onClick={setGameOver} variant="contained" color="primary">END GAME</Button>
   )
 }
+
 
 const App = () => {
 
@@ -194,6 +174,7 @@ const App = () => {
   const [hintMSG, setHintMSG] = useState([]);
   const [hintSet, setHintSet] = useState([]);
   const [paused, setPaused] = useState(false);
+  const [home, setHome] = useState(true);
 
   function getHint () {
     let setFound = false;
@@ -224,35 +205,10 @@ const App = () => {
       }
 
     }
-
     if (setFound === false) {
       setHintMSG(["RESHUFFLE"]);
     }
   }
-
-  {/*setFound = False
-        for firstIndex in range(0, len(self.Board)-1):
-            if setFound == True:
-                break
-            for secondIndex in range(self.Board.index(self.Board[firstIndex])+1, len(self.Board)):
-                similarityString = ""
-                similarityTypes = [self.Numbers, self.Shapes, self.Colors, self.Fillings]
-                
-                for y in range(0, 4):
-
-                    if self.Board[firstIndex][y] == self.Board[secondIndex][y]:
-                        similarityString += self.Board[firstIndex][y]
-                    else:
-                        voidedWhatever = [x for x in similarityTypes[y] if x != self.Board[firstIndex][y] and x != self.Board[secondIndex][y]]
-                        similarityString += voidedWhatever[0] 
-
-                if similarityString in self.Board:
-                    
-                    self.SetExecution(firstIndex, secondIndex, self.Board.index(similarityString))
-                    setFound = True
-  break */}
-
-
 
   function shuffle () {
     let newGrid = generateCardGrid();
@@ -261,14 +217,9 @@ const App = () => {
     setShufCount(shufCount + 1);
     setHintSet([]);
     setHintMSG([]);
-
   }
 
- 
-  
-
   function checkSet () {
-
     let truths = 0;
     for (let property = 0; property < numProperties; property++) {
       let truthTest = [];
@@ -295,9 +246,7 @@ const App = () => {
           tempCards =tempCards.concat(newCard);
         }
       };
-
       setCards(tempCards);
-
       setSelected([]);
     }
   };
@@ -314,13 +263,11 @@ const App = () => {
     setGameOver(false);
   }
 
-
   useEffect(()=>{
     if (selected.length === 3) {
       checkSet();
     }
   }, [selected]);
-
   
   function togglePause () {
     if (paused == false) {
@@ -330,59 +277,83 @@ const App = () => {
     }
   }
 
-  return (
+  function playGame(){
+    setHome(false);
+  }
 
-  <div>
-     
-    <div style={{display:"flex", flexFlow:"row nowrap"}}>
-      <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"55%"}}>
-        <h1 className={classes.gameBanner}>SET! The Game</h1>
-        <Timer paused={paused} timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
-        <div style={{display:"flex", justifyContent:"center", width:300}}>
-          <div style = {{display: "flex", flexFlow: "column nowrap"}}>
-            <Button style={{borderRadius:10, size: "large"}} onClick={togglePause} variant="contained" color="primary"> PAUSE </Button>
-            <br></br>
-            <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
-                SHUFFLE
-            </Button>
-            <br></br>
-            <Button style={{borderRadius:10, size:"large"}} onClick={getHint} variant="contained" color="primary">
-                HINT
-            </Button>
-            <br></br>
-            <EarlyEndGame setGameOver = {setGameOver}></EarlyEndGame>
-            <p style = {{textAlign: "center"}}>{hintMSG.length === 1 ? hintMSG[0] : null}</p>
-            
-          </div>
-        </div>
+  return (
+    <div>
+    {home ? 
+      <React.Fragment>
+        <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
         <div>
-          
-          <h3 style={{paddingBottom: "5px", textAlign: "center"}}> Number of Sets Found: {totalSets} </h3>
-          
-          <div style={{overflowY: "scroll", maxHeight: 280}}>
-            <SetList  foundSets={foundSets}></SetList>
+          <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto"}}>
+            <h1 style={{fontSize:100, textAlign:"center", marginTop:"20%", marginBottom:"1%"}}> SET! The Game </h1>
+            <h3 style={{textAlign:"center", marginBottom:"10%"}}> Hello, Guest </h3>
           </div>
-          <div style={{display: "flex", justifyContent: "space-around", flexFlow: "row nowrap"}}>
-            <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>You've shuffled {shufCount} times!</h5>
-            
-            <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>&nbsp;&nbsp;&nbsp; You've used {hintCount} hints!</h5>
+          <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"25%"}}>
+            <Button variant="contained" color="secondary" onClick={playGame}> Play Game </Button>
+            <br></br>
+            <Button href="https://www.setgame.com/file/set-english" target="blank" variant="contained" color="secondary"> How to Play </Button>
+            <br></br>
+            <Button href="https://github.com/Lam-Richard/set" target="blank" variant="contained" color="secondary"> About </Button>
+            <br></br>
+            <Button variant="contained" color="secondary"> Sign In </Button>
           </div>
         </div>
-      </div>
-      <div style={{width:"45%"}}>
-        <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
-          {cards.map(card => 
-          <Grid item spacing={2} style={{padding:10}}> 
-            <SetCard hintSet={hintSet} card={card} selected={selected} setSelected ={setSelected}></SetCard> 
-          </Grid>)}
-        </Grid>
-        <SwipeableTemporaryDrawer gameOver={gameOver} totalSets={totalSets} foundSets={foundSets}>
-        </SwipeableTemporaryDrawer>
-        
+        </div>
+      </React.Fragment>
+
+    :
+      <div style={{display:"flex", flexFlow:"row nowrap"}}>
+        <div style={{ display:"flex", flexFlow:"column nowrap", alignItems:"center", width:"55%"}}>
+          <h1 className={classes.gameBanner}>SET! The Game</h1>
+          <Timer paused={paused} timer={timer} setTimer={setTimer} gameOver={gameOver} setGameOver={setGameOver} ></Timer>
+          <div style={{display:"flex", justifyContent:"center", width:300}}>
+            <div style = {{display: "flex", flexFlow: "column nowrap"}}>
+              <Button style={{borderRadius:10, size: "large"}} onClick={togglePause} variant="contained" color="primary"> PAUSE </Button>
+              <br></br>
+              <Button style={{borderRadius:10, size:"large"}} onClick={shuffle} variant="contained" color="primary">
+                  SHUFFLE
+              </Button>
+              <br></br>
+              <Button style={{borderRadius:10, size:"large"}} onClick={getHint} variant="contained" color="primary">
+                  HINT
+              </Button>
+              <br></br>
+              <EarlyEndGame setGameOver = {setGameOver}></EarlyEndGame>
+              <p style = {{textAlign: "center"}}>{hintMSG.length === 1 ? hintMSG[0] : null}</p>
+              
+            </div>
+          </div>
+          <div>
+            
+            <h3 style={{paddingBottom: "5px", textAlign: "center"}}> Number of Sets Found: {totalSets} </h3>
+            
+            <div style={{overflowY: "scroll", maxHeight: 280}}>
+              <SetList  foundSets={foundSets}></SetList>
+            </div>
+            <div style={{display: "flex", justifyContent: "space-around", flexFlow: "row nowrap"}}>
+              <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>You've shuffled {shufCount} times!</h5>
+              
+              <h5 style={{fontStyle: "oblique", paddingTop: "5px", margin: 0}}>&nbsp;&nbsp;&nbsp; You've used {hintCount} hints!</h5>
+            </div>
+          </div>
+        </div>
+        <div style={{width:"45%"}}>
+          <Grid container spacing={4} justify={"space-evenly"} style={{height:"60%", margin:"5px"}}>    
+            {cards.map(card => 
+            <Grid item spacing={2} style={{padding:10}}> 
+              <SetCard hintSet={hintSet} card={card} selected={selected} setSelected ={setSelected}></SetCard> 
+            </Grid>)}
+          </Grid>
+          <SwipeableTemporaryDrawer gameOver={gameOver} totalSets={totalSets} foundSets={foundSets} home={home} setHome={setHome}>
+          </SwipeableTemporaryDrawer>
+          { paused ? <AlertDialog paused={paused} setPaused={setPaused}/> : null} 
+        </div> 
       </div> 
-    </div> 
-    { paused ? <AlertDialog paused={paused} setPaused={setPaused}/> : null}
-  </div>
+    }
+    </div>
   )
 };
 

@@ -20,10 +20,14 @@ const useStyles = makeStyles({
 
 
 
-const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
+const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets, home, setHome}) => {
   const classes = useStyles();
 
   function refreshPage() {
+    window.location.reload(false);
+  }
+  function goHome(){
+    setHome(true);
     window.location.reload(false);
   }
 
@@ -54,9 +58,13 @@ const SwipeableTemporaryDrawer = ({gameOver, totalSets, foundSets}) => {
             
 
 
-            <div>
+            <div style = {{display: "flex", flexFlow: "column nowrap"}}>
                 <Button style={{borderRadius:10, size:"large"}} onClick={refreshPage} variant="contained" color="primary">
                     Play Again
+                </Button>
+                <br></br>
+                <Button style={{borderRadius:10, size:"large"}} onClick={goHome} variant="contained" color="primary">
+                    Back To Home
                 </Button>
             </div>
             
