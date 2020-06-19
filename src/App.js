@@ -288,8 +288,8 @@ const App = () => {
         <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
         <div>
           <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto"}}>
-            <h1 style={{fontSize:100, textAlign:"center", marginTop:"20%", marginBottom:"1%"}}> SET! The Game </h1>
-            <h3 style={{textAlign:"center", marginBottom:"10%"}}> Hello, Guest </h3>
+            <h1 style={{fontSize:100, textAlign:"center", marginTop:"20%", marginBottom:"10%"}}> SET! The Game </h1>
+            {/* <h3 style={{textAlign:"center", marginBottom:"10%"}}> Hello, Guest </h3> */}
           </div>
           <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"25%"}}>
             <Button variant="contained" color="secondary" onClick={playGame}> Play Game </Button>
@@ -298,7 +298,7 @@ const App = () => {
             <br></br>
             <Button href="https://github.com/Lam-Richard/set" target="blank" variant="contained" color="secondary"> About </Button>
             <br></br>
-            <Button variant="contained" color="secondary"> Sign In </Button>
+            {/* <Button variant="contained" color="secondary"> Sign In </Button> */}
           </div>
         </div>
         </div>
