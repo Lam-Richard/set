@@ -7,6 +7,43 @@ import SwipeableTemporaryDrawer from "./drawer";
 import AlertDialog from "./pauseScreen";
 import { SetList } from "./setList"; 
 import './App.css';
+import firebase from 'firebase/app';
+import 'firebase/database';
+import 'firebase/auth';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCrw3TOOMQs26jEIy9y_oZdWvVGhKKNpDY",
+  authDomain: "playsetsonline.firebaseapp.com",
+  databaseURL: "https://playsetsonline.firebaseio.com",
+  projectId: "playsetsonline",
+  storageBucket: "playsetsonline.appspot.com",
+  messagingSenderId: "206782632900",
+  appId: "1:206782632900:web:82d3501e6caa9ae803ca91",
+  measurementId: "G-5VL17EB6G2"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database().ref();
+
+const uiConfig = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  ],
+  callbacks: {
+    signInSuccessWithAuthResult: () => false
+  }
+};
+
+
+const SignIn = () => (
+  <StyledFirebaseAuth
+    uiConfig={uiConfig}
+    firebaseAuth={firebase.auth()}
+  />
+);
+
 moment().format();
 
 const useStyles = makeStyles((theme) => ({
@@ -175,6 +212,21 @@ const App = () => {
   const [hintSet, setHintSet] = useState([]);
   const [paused, setPaused] = useState(false);
   const [home, setHome] = useState(true);
+  const [user, setUser] = useState(null);
+  const [leaderBoard, setLeaderBoard] = useState([]);
+
+  useEffect(() => {
+    const handleData = snap => {
+      if (snap.val()) setLeaderBoard(snap.val().leaderboard);
+    }
+    db.on('value', handleData, error => alert(error));
+    return () => { db.off('value', handleData); };
+  }, []);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser);
+  }, []);
+
 
   function getHint () {
     let setFound = false;
@@ -289,17 +341,27 @@ const App = () => {
         <div>
           <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto"}}>
             <h1 style={{fontSize:100, textAlign:"center", marginTop:"20%", marginBottom:"10%"}}> SET! The Game </h1>
-            {/* <h3 style={{textAlign:"center", marginBottom:"10%"}}> Hello, Guest </h3> */}
+            <h3 style={{textAlign:"center", marginBottom:"5%"}}> Hello, { user ? user.displayName : "Guest" } </h3> 
           </div>
-          <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"25%"}}>
+          <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"32%"}}>
             <Button variant="contained" color="secondary" onClick={playGame}> Play Game </Button>
             <br></br>
             <Button href="https://www.setgame.com/file/set-english" target="blank" variant="contained" color="secondary"> How to Play </Button>
             <br></br>
             <Button href="https://github.com/Lam-Richard/set" target="blank" variant="contained" color="secondary"> About </Button>
             <br></br>
-            {/* <Button variant="contained" color="secondary"> Sign In </Button> */}
           </div>
+          <React.Fragment>
+            { user ? 
+              <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"32%"}}>
+                <Button variant="contained" color="secondary" onClick={() => firebase.auth().signOut()}>
+                  Log out
+                </Button> 
+              </div> :           
+              <div style={{display: "flex", flexFlow: "column nowrap", margin: "auto", width:"40%"}}>
+                <SignIn />  
+              </div> }
+            </React.Fragment>
         </div>
         </div>
       </React.Fragment>
